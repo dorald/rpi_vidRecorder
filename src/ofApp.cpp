@@ -30,10 +30,7 @@ void ofApp::setup(){
     recordFbo.allocate(vidGrabber.getWidth(),vidGrabber.getHeight(),GL_RGB);
     recordPixels.allocate(1280,720,OF_IMAGE_COLOR);
     
-    //	void setup(int width, int height, int radius = 32, float shape = .2, int passes = 1, float downsample = .5);
-    blur.setup(vidGrabber.getWidth(), vidGrabber.getHeight(), 4, .2, 4, .9);
-    
-    
+       
     ofSetWindowShape(vidGrabber.getWidth(), vidGrabber.getHeight()	);
     bRecording = false;
     ofEnableAlphaBlending();
@@ -47,55 +44,11 @@ void ofApp::exit() {
 void ofApp::update(){
     vidGrabber.update();
     
-    blur.setScale(ofMap(mouseX, 0, ofGetWidth(), 1, 4));
-	blur.setRotation(ofMap(mouseY, 0, ofGetHeight(), -PI, PI));
-    
-    changePix;
-    
-    if(vidGrabber.isFrameNew())
-    {
-        changePix = vidGrabber.getPixelsRef();
-        for(int i = 0; i < changePix.getWidth(); i++)
-        {
-            for(int j = 0; j < changePix.getHeight(); j++)
-            {
-                if(changePix.getColor(i, j).getBrightness() > 100)
-                {
-                    ofColor black;
-                    black.set(255);
-                    changePix.setColor(i, j, black);
-                
-                }
-            }
-        }
-    }
-    
-    
-//    if(vidGrabber.isFrameNew() && bRecording){
-//        vidRecorder.addFrame(vidGrabber.getPixelsRef());
-//    }
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofSetColor(255, 255, 255);
-    
-    ofImage drawImg;
-    drawImg.setFromPixels(changePix);
-    
-//    vidGrabber.draw(0,0);
-    drawImg.draw(0,0);
-    
-    blur.begin();
-	ofSetColor(255);
-	vidGrabber.draw(0, 0);
-	ofSetCircleResolution(64);
-	ofCircle(mouseX, mouseY, 32);
-	blur.end();
-	
-	blur.draw();
-    
-    
     
     stringstream ss;
     ss << "video queue size: " << vidRecorder.getVideoQueueSize() << endl

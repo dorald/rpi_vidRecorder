@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 #include "ofxVideoRecorder.h"
-#include "ofxBlur.h"
 
 class ofApp : public ofBaseApp{
 
@@ -35,11 +34,11 @@ public:
     string fileName;
     string fileExt;
     
-    ofxBlur blur;
     
     ofFbo recordFbo;
     ofPixels recordPixels;
     ofPixels changePix;
+    
     
 		
 };
