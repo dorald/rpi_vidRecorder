@@ -30,10 +30,11 @@ void ofApp::setup(){
     recordFbo.allocate(vidGrabber.getWidth(),vidGrabber.getHeight(),GL_RGB);
     recordPixels.allocate(1280,720,OF_IMAGE_COLOR);
     
-       
+    
     ofSetWindowShape(vidGrabber.getWidth(), vidGrabber.getHeight()	);
     bRecording = false;
     ofEnableAlphaBlending();
+    
 }
 
 void ofApp::exit() {
@@ -43,12 +44,27 @@ void ofApp::exit() {
 //--------------------------------------------------------------
 void ofApp::update(){
     vidGrabber.update();
+    if(vidGrabber.isFrameNew() && bRecording){
+        vidRecorder.addFrame(vidGrabber.getPixelsRef());
+    }
+    
+    if(ofGetElapsedTimeMillis() > 10000){
+        bRecording = true;
+        if(bRecording && !vidRecorder.isInitialized()) {
+            vidRecorder.setup(fileName+ofGetTimestampString()+fileExt, vidGrabber.getWidth(), vidGrabber.getHeight(), 30, sampleRate, channels);
+            //          vidRecorder.setup(fileName+ofGetTimestampString()+fileExt, vidGrabber.getWidth(), vidGrabber.getHeight(), 30); // no audio
+            //            vidRecorder.setup(fileName+ofGetTimestampString()+fileExt, 0,0,0, sampleRate, channels); // no video
+            //          vidRecorder.setupCustomOutput(vidGrabber.getWidth(), vidGrabber.getHeight(), 30, sampleRate, channels, "-vcodec mpeg4 -b 1600k -acodec mp2 -ab 128k -f mpegts udp://localhost:1234"); // for custom ffmpeg output string (streaming, etc)
+        }
+    }
+
     
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofSetColor(255, 255, 255);
+    vidGrabber.draw(0, 0);
     
     stringstream ss;
     ss << "video queue size: " << vidRecorder.getVideoQueueSize() << endl
@@ -66,6 +82,8 @@ void ofApp::draw(){
         ofSetColor(255, 0, 0);
         ofCircle(ofGetWidth() - 20, 20, 5);
     }
+    
+    
 }
 
 //--------------------------------------------------------------
