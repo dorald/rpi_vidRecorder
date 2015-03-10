@@ -5,13 +5,13 @@ void ofApp::setup(){
     sampleRate = 44100;
     channels = 2;
     
-    ofSetFrameRate(60);
-    ofSetLogLevel(OF_LOG_VERBOSE);
+    ofSetFrameRate(30);
+    //ofSetLogLevel(OF_LOG_VERBOSE);
     vidGrabber.setDesiredFrameRate(30);
     vidGrabber.initGrabber(640, 480);
     //    vidRecorder.setFfmpegLocation(ofFilePath::getAbsolutePath("ffmpeg")); // use this is you have ffmpeg installed in your data folder
     
-    fileName = "testMovie";
+    fileName = "/mnt/storage/rpitest";
     fileExt = ".mov"; // ffmpeg uses the extension to determine the container type. run 'ffmpeg -formats' to see supported formats
     
     // override the default codecs if you like
@@ -43,6 +43,20 @@ void ofApp::exit() {
 //--------------------------------------------------------------
 void ofApp::update(){
     vidGrabber.update();
+    if(vidGrabber.isFrameNew() && bRecording){
+        vidRecorder.addFrame(vidGrabber.getPixelsRef());
+    }
+    
+    if(ofGetElapsedTimeMillis() > 10000){
+        bRecording = true;
+        if(bRecording && !vidRecorder.isInitialized()) {
+            //vidRecorder.setup(fileName+ofGetTimestampString()+fileExt, vidGrabber.getWidth(), vidGrabber.getHeight(), 30, sampleRate, channels);
+             vidRecorder.setup(fileName+ofGetTimestampString()+fileExt, vidGrabber.getWidth(), vidGrabber.getHeight(), 30); // no audio
+            //            vidRecorder.setup(fileName+ofGetTimestampString()+fileExt, 0,0,0, sampleRate, channels); // no video
+            //          vidRecorder.setupCustomOutput(vidGrabber.getWidth(), vidGrabber.getHeight(), 30, sampleRate, channels, "-vcodec mpeg4 -b 1600k -acodec mp2 -ab 128k -f mpegts udp://localhost:1234"); // for custom ffmpeg output string (streaming, etc)
+        }
+    }
+
     
 }
 
