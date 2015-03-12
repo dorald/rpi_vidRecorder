@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxVideoRecorder.h"
+#include "ofxFastFboReader.h"
+#include "ofxGifEncoder.h"
 
 class ofApp : public ofBaseApp{
 
@@ -20,24 +21,38 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     
-    void audioIn(float *input, int bufferSize, int nChannels);
     
     void exit();
     
     
     ofVideoGrabber      vidGrabber;
-    ofxVideoRecorder    vidRecorder;
-    ofSoundStream       soundStream;
+    //ofxVideoRecorder    vidRecorder;
     bool bRecording;
     int sampleRate;
     int channels;
     string fileName;
     string fileExt;
     
+    ofxFastFboReader reader;
+    int frameCounter;
     
-    ofFbo recordFbo;
-    ofPixels recordPixels;
-    ofPixels changePix;
+    ofFbo fbo;
+    ofImage image;
+    ofPixels pix;
+    
+    void onGifSaved(string & fileName);
+    void captureFrame();
+    
+    vector <ofTexture *> txs; // for previewing
+    vector <ofxGifFrame *> pxs;
+    
+    int frameW, frameH;
+    int nFrames;
+    
+    ofVideoGrabber vid;
+    ofxGifEncoder gifEncoder;
+    
+    
     
     
 		
