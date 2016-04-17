@@ -1,2 +1,2 @@
 # rpi_vidRecorder
-openFrameworks-based video recorder for raspberry pi (forked from
+openFrameworks-based video recorder for raspberry pi (forked from @jmarsico )
